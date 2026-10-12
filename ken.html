@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulsing Image</title>
+    <style>
+        /* Reset and center everything with no scrollbars visible */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; 
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #target-image {
+            max-width: 80vw;
+            max-height: 80vh;
+            width: 5000;
+            height: auto;
+            user-select: none;
+            /* Animation fallback speed (80 BPM base = 1.5s cycle) */
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(10); }
+            50% { transform: scale(0.6); }
+            100% { transform: scale(10); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Replace the URL below with your actual image path -->
+    <img  id="target-image" src="andrew.jpg" height="5000" alt="Pulsing Image">
+
+    <script>
+        const img = document.getElementById('target-image');
+        
+        // Base starting speed at 80 BPM (1.5 seconds per full cycle)
+        let currentBpm = 80;
+
+        window.addEventListener('wheel', (event) => {
+            // Prevent accidental browser page zooming/scrolling
+            event.preventDefault();
+
+            // Scrolling down increases BPM (makes it faster)
+            // Scrolling up decreases BPM (makes it slower)
+            if (event.deltaY > 0) {
+                currentBpm += 5; 
+            } else {
+                currentBpm -= 5;
+            }
+
+            // Keep BPM within a functional range (min 20, max 600)
+            currentBpm = Math.max(20, Math.min(600, currentBpm));
+
+            // Calculate new duration: (60 seconds / BPM) * 2 beats for a full loop
+            let newDuration = (60 / currentBpm) * 2;
+
+            // Dynamically apply the new speed smoothly
+            img.style.animationDuration = `${newDuration}s`;
+        }, { passive: false });
+    </script>
+</body>
+</html>
